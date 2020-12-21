@@ -1,22 +1,18 @@
-
 import "./lib/env";
 import express from 'express';
-import { getFindings, bindCatch } from './lib/utils';
+import bodyParser from "body-parser";
+import path from "path";
+import apiRouter from './api';
 
 // Create a new express app instance
 const app: express.Application = express();
+const buildDir = path.resolve(__dirname, '../../build');
 
-app.get('/', bindCatch(async function (req: express.Request, res: express.Response) {
-  const wtTagName = req.query.wtTagName;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(buildDir));
+app.use('/api', apiRouter);
 
-  if (!wtTagName) {
-    throw new Error('wtTagName query param is expected!');
-  }
-  
-  const finding = await getFindings(wtTagName as string);
-
-  res.send(finding);
-}));
 
 app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
   if (err) {
@@ -29,5 +25,5 @@ app.use(function (err: Error, req: express.Request, res: express.Response, next:
   next(req);
 })
 
-const PORT = process.env.PORT || 3000;
-app.listen(process.env.PORT || 3000, () => console.log(`App is listening on port ${PORT}!`));
+const port = process.env.API_PORT || 3001;
+app.listen(port, () => console.log(`App is listening on port ${port}!`));

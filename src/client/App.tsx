@@ -7,7 +7,7 @@ function App() {
   const [serverResult, setServerResult] = useState<number | null>(null);
   useEffect(() => {
     (async () => {
-      const result = await fetch("/ping");
+      const result = await fetch("/api/sum");
       const newServerResult = await result.json();
       setServerResult(newServerResult);
     })();
