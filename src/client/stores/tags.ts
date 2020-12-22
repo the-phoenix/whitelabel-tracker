@@ -1,20 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from './index';
+import { AppThunk, RootState } from './index';
+
+type TagName = string;
 
 export interface WhiteLabelTagPayload {
-  name: string;
+  tagName: TagName;
   description: string;
-}
+};
 
 export interface WhiteLabelTag extends WhiteLabelTagPayload {
   occurence: string;  // Load via api
   loading: boolean;
-  error: null | Error;
-}
+  err: null | Error;
+};
 
 export interface TagsState {
-  tags: { [tagName: string]: WhiteLabelTag; }
-}
+  tags: { [tagName: string]: WhiteLabelTag }
+};
 
 const initialState: TagsState = {
   tags: {}
@@ -29,13 +31,38 @@ export const tagsSlice = createSlice({
   initialState,
   reducers: {
     addNew: (state, action: PayloadAction<WhiteLabelTagPayload>) => {
-      // Redux toolkit allows
-      state.tags[action.payload.name] = {
-        ...action.payload,
-        error: null,
+      const { payload } = action;
+
+      state.tags[payload.tagName] = {
+        ...payload,
+        err: null,
         occurence: '',
         loading: false,
       };
     },
+    queryOccurenceLoading: (state, action: PayloadAction<TagName>) => {
+      state.tags[action.payload].loading = true;
+    },
+    queryOccurenceSuccess: (state, action: PayloadAction<{tagName: TagName, occurence: string}>) => {
+      const { payload } = action;
+      state.tags[payload.tagName].loading = false;
+      state.tags[payload.tagName].occurence = payload.occurence;
+    },
+    queryOccurenceError: (state, action: PayloadAction<{tagName: TagName, error: Error}>) => {
+      const { payload } = action;
+
+      state.tags[payload.tagName].loading = false;
+      state.tags[payload.tagName].err = payload.error;
+    }
   },
 });
+
+// export const queryOccurence = (tagName: TagName): AppThunk => dispatch => {
+//   setTimeout(() => {
+//     dispatch(incrementByAmount(amount));
+//   }, 1000);
+// };
+
+export const selectTags = (state: RootState) => state.tags.tags
+
+export default tagsSlice.reducer
