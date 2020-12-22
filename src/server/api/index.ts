@@ -8,13 +8,13 @@ const router = express.Router();
 router.get('/', (_, res) => res.send('API is healthy!'));
 
 router.get('/occurence', bindCatch(async function (req: express.Request, res: express.Response) {
-  const wtTagName = req.query.wtTagName;
+  const tagName = req.query.tagName;
 
-  if (!wtTagName) {
-    throw new Error('wtTagName query param is expected!');
+  if (!tagName) {
+    throw new Error('tagName query param is expected!');
   }
   
-  const finding = await getFindings(wtTagName as string);
+  const finding = await getFindings(tagName as string);
 
   res.send(finding);
 }));

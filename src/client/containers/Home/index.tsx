@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import logo from "./logo.svg";
 import "./Home.css";
 import { selectCount, increment } from '../../stores/counter'
+import { queryOccurence } from '../../stores/tags'
 import { sum } from "../../../core/math";
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
         <p>Server result {serverResult}</p>
         <p>Count {count}</p>
         <button onClick={() => dispatch(increment())}>Do increment</button>
+        <button onClick={() => dispatch(queryOccurence('__WT-favicon'))}>Query occurence</button>
       </header>
     </div>
   );

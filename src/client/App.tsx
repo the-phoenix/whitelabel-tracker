@@ -8,6 +8,8 @@ import Home from './containers/Home';
 const persistor = persistStore(store);
 
 function App() {
+  persistor.purge()
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

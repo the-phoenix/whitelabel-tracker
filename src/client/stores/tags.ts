@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { current } from 'immer';
 import { AppThunk, RootState } from './index';
 
 type TagName = string;
@@ -19,7 +20,15 @@ export interface TagsState {
 };
 
 const initialState: TagsState = {
-  tags: {}
+  tags: {
+    '__WT-favicon': {
+      tagName: '__WT-favicon',
+      description: 'some goes here',
+      occurence: '',
+      loading: false,
+      err: null
+    }
+  }
 };
 
 // Redux Toolkit allows us to write "mutating" logic in reducers. It
@@ -45,6 +54,7 @@ export const tagsSlice = createSlice({
     },
     queryOccurenceSuccess: (state, action: PayloadAction<{tagName: TagName, occurence: string}>) => {
       const { payload } = action;
+
       state.tags[payload.tagName].loading = false;
       state.tags[payload.tagName].occurence = payload.occurence;
     },
@@ -57,11 +67,20 @@ export const tagsSlice = createSlice({
   },
 });
 
-// export const queryOccurence = (tagName: TagName): AppThunk => dispatch => {
-//   setTimeout(() => {
-//     dispatch(incrementByAmount(amount));
-//   }, 1000);
-// };
+export const { ...actions } = tagsSlice.actions;
+
+export const queryOccurence = (tagName: TagName): AppThunk => async dispatch => {
+  dispatch(actions.queryOccurenceLoading(tagName))
+
+  try {
+    const resp = await fetch("/api/occurence?tagName=" + tagName);
+    const occurence = await resp.text();
+
+    dispatch(actions.queryOccurenceSuccess({ tagName, occurence }));
+  } catch (error) {
+    dispatch(actions.queryOccurenceError({ tagName, error }));
+  }
+};
 
 export const selectTags = (state: RootState) => state.tags.tags
 

@@ -9,7 +9,7 @@ const options: ExecOptions = {
   shell: '/bin/zsh'
 };
 
-const extensions = ['styl', 'tsx', 'ejs'];
+const extensions = ['styl', 'tsx', 'ejs', 'js', 'ts'];
 
 export async function getFindings(whitelabelTag: string) {
   if (!whitelabelTag.startsWith('__WT-')) {
