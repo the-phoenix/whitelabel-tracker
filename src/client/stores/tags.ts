@@ -63,6 +63,7 @@ export const tagsSlice = createSlice({
 
       state.tags[payload.tagName].loading = false;
       state.tags[payload.tagName].occurence = payload.occurence;
+      state.tags[payload.tagName].err = null;
     },
     queryOccurenceError: (
       state,
@@ -71,6 +72,7 @@ export const tagsSlice = createSlice({
       const { payload } = action;
 
       state.tags[payload.tagName].loading = false;
+      state.tags[payload.tagName].occurence = "";
       state.tags[payload.tagName].err = payload.error;
     },
   },
