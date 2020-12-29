@@ -9,7 +9,11 @@ interface SingleTagsProps extends WhiteLabelTag {
   onRefresh: (tagName: string) => void;
 }
 
-const SingleTag: React.FC<SingleTagsProps> = ({ onDelete, onRefresh, ...props }) => {
+const SingleTag: React.FC<SingleTagsProps> = ({
+  onDelete,
+  onRefresh,
+  ...props
+}) => {
   useEffect(() => {
     if (!props.occurence) {
       onRefresh(props.tagName);
@@ -18,9 +22,11 @@ const SingleTag: React.FC<SingleTagsProps> = ({ onDelete, onRefresh, ...props })
 
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap">{props.index + 1}</td>
+      <td className="px-5 py-4 whitespace-nowrap text-gray-400">
+        {props.index + 1}
+      </td>
       <td className="px-6 py-4 whitespace-nowrap">{props.tagName}</td>
-      <td className="px-6 py-4 whitespace-nowrap">{props.description}</td>
+      <td className="px-6 py-4 truncate">{props.description}</td>
       <td className="px-6 py-4 whitespace-nowrap">
         {props.loading ? "..." : props.occurence}
         {!props.loading && props.err ? props.err.toString() : ""}

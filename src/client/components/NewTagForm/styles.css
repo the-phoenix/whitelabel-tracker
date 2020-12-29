@@ -1,5 +1,9 @@
 @tailwind utilities;
 
 .form-new-tag__inner {
-    @apply shadow sm:rounded-md sm:overflow-hidden bg-white px-2 py-1;
+  @apply shadow sm:rounded-md sm:overflow-hidden bg-white px-4 py-3;
+}
+
+.btn-new-tag-form-submit {
+  @apply inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
 }

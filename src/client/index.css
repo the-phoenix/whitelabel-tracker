@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+@layer components {
   .input-text {
-    @apply focus:border-gray-500 border-gray-300;
+    @apply focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 px-3 border;
   }
 }
