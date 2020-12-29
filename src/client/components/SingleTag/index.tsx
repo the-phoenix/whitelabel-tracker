@@ -9,10 +9,10 @@ interface SingleTagsProps extends WhiteLabelTag {
   onRefresh: (tagName: string) => void;
 }
 
-const SingleTag: React.FC<SingleTagsProps> = (props) => {
+const SingleTag: React.FC<SingleTagsProps> = ({ onDelete, onRefresh, ...props }) => {
   useEffect(() => {
     if (!props.occurence) {
-      props.onRefresh(props.tagName);
+      onRefresh(props.tagName);
     }
   }, []);
 
@@ -28,13 +28,13 @@ const SingleTag: React.FC<SingleTagsProps> = (props) => {
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
         <button
           className="text-indigo-600 hover:text-indigo-900 mr-2"
-          onClick={() => props.onDelete(props.tagName)}
+          onClick={() => onRefresh(props.tagName)}
         >
-          Edit
+          Refresh
         </button>
         <button
           className="text-indigo-600 hover:text-indigo-900"
-          onClick={() => props.onDelete(props.tagName)}
+          onClick={() => onDelete(props.tagName)}
         >
           Delete
         </button>

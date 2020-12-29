@@ -24,7 +24,7 @@ const initialState: TagsState = {
     "__WT-favicon": {
       tagName: "__WT-favicon",
       description: "some goes here",
-      occurence: "",
+      occurence: "howdy",
       loading: false,
       err: null,
     },

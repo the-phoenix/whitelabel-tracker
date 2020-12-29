@@ -1,0 +1,5 @@
+@tailwind utilities;
+
+.form-new-tag__inner {
+    @apply shadow sm:rounded-md sm:overflow-hidden bg-white px-2 py-1;
+}
