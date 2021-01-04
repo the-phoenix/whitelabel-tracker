@@ -9,7 +9,7 @@ import Tags from "./containers/Tags";
 const persistor = persistStore(store);
 
 function App() {
-  // persistor.purge();  /* Uncomment this line to purge store */
+  // persistor.purge(); /* Uncomment this line to purge store */
 
   return (
     <Provider store={store}>

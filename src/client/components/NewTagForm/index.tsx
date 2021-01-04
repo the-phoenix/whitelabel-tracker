@@ -1,10 +1,13 @@
 import React from "react";
-import { WhiteLabelTagPayload } from "../../stores/tags";
-import { WL_TAG_PREFIX } from "../../../core/constants";
+
+import { WhiteLabelTagPayload, TagName } from "../../stores/tags";
+import WLTagInput from "../WLTagInput";
+import useFocusInput from "../../hooks/FocusInput";
 
 import "./styles.css";
 
 interface NewTagFormProps {
+  isFresh: (tagName: TagName) => boolean;
   onSubmit: (formValues: WhiteLabelTagPayload) => void;
 }
 
@@ -13,18 +16,19 @@ const initialFormValues: WhiteLabelTagPayload = {
   description: "",
 };
 
-const NewTagForm: React.FC<NewTagFormProps> = ({ onSubmit }) => {
+const NewTagForm: React.FC<NewTagFormProps> = ({ onSubmit, isFresh }) => {
   const [formValues, setFormValues] = React.useState(initialFormValues);
+  const [inputRef, setInputFocus] = useFocusInput();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // add __WT- here
-    if (!formValues.tagName.startsWith(WL_TAG_PREFIX)) {
-      formValues.tagName = `${WL_TAG_PREFIX}${formValues.tagName}`;
+
+    if (!isFresh(formValues.tagName)) {
+      alert("Already registered tag name");
+      return setInputFocus(true);
     }
 
     onSubmit(formValues);
@@ -35,23 +39,18 @@ const NewTagForm: React.FC<NewTagFormProps> = ({ onSubmit }) => {
     <div className="tags-new w-4/6 mb-3">
       <form onSubmit={handleSubmit}>
         <div className="form-new-tag__inner grid grid-cols-6 gap-3">
-          <div className="flex rounded-md shadow-sm col-span-4">
-            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-              {WL_TAG_PREFIX}
-            </span>
-            <input
-              type="text"
-              className="input-text flex-1 block rounded-none rounded-r-md sm:text-sm"
-              name="tagName"
-              value={formValues.tagName}
-              placeholder="Input tag name here"
-              autoFocus
-              autoComplete="off"
-              onChange={handleChange}
-              tabIndex={1}
-              required
-            />
-          </div>
+          <WLTagInput
+            className="flex rounded-md shadow-sm col-span-4"
+            name="tagName"
+            value={formValues.tagName}
+            placeholder="Input tag name here"
+            autoFocus
+            autoComplete="off"
+            onChange={handleChange}
+            tabIndex={1}
+            required
+            ref={inputRef}
+          />
           <button className="btn-new-tag-form-submit col-span-1" type="submit">
             Add new tag
           </button>
@@ -65,6 +64,7 @@ const NewTagForm: React.FC<NewTagFormProps> = ({ onSubmit }) => {
               onChange={handleChange}
               autoComplete="off"
               tabIndex={2}
+              // ref={inputRef}
             />
           </div>
         </div>

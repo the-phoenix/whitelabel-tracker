@@ -1,34 +1,61 @@
-import React, { useState, FormEvent } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+
 import SingleTag from "../../components/SingleTag";
 import NewTagForm from "../../components/NewTagForm";
-
-import "./Tags.css";
 import {
   selectTags,
   WhiteLabelTagPayload,
   addNewTag,
   deleteTag,
+  updateTag,
   queryOccurence,
+  TagName,
+  WhiteLabelTagUpdatePayload,
 } from "../../stores/tags";
+import { downloadJSON } from "../../_helper";
+import { WL_TAG_PREFIX } from "../../../core/constants";
 
-type TagFilter = "all" | "valid";
+import "./Tags.css";
+
+// type TagFilter = "all" | "valid";
+
+const EXPORT_FILENAME = "whitelabel_tags.json";
 
 export default function Home() {
   const dispatch = useDispatch();
-  const [filter, setFilter] = useState<TagFilter>("all");
+  // const [filter, setFilter] = useState<TagFilter>("all");
   const tags = useSelector(selectTags);
   const handleAddNew = (formValues: WhiteLabelTagPayload) =>
     dispatch(addNewTag(formValues));
 
-  const handleDelete = (tagName: string) => dispatch(deleteTag(tagName));
-  const handleRefresh = (tagName: string) => dispatch(queryOccurence(tagName));
+  const handleDelete = (tagName: TagName) => dispatch(deleteTag(tagName));
+  const handleUpdate = (modified: WhiteLabelTagUpdatePayload) =>
+    dispatch(updateTag(modified));
+  const handleRefresh = (tagName: TagName) => dispatch(queryOccurence(tagName));
+  const isFresh = (tagName: TagName) =>
+    tags.findIndex((t) => t.tagName === tagName) < 0;
+  const handleExport = () => {
+    const json = tags.reduce((acc, curr) => {
+      const fullTagName = `${WL_TAG_PREFIX}${curr.tagName}`;
+      acc[fullTagName] = curr.description;
+
+      return acc;
+    }, {} as { [k: string]: string });
+
+    downloadJSON(EXPORT_FILENAME, json);
+  };
 
   return (
     <div className="tags">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div className="flex flex-col">
-          <NewTagForm onSubmit={handleAddNew} />
+        <div className="flex justify-between">
+          <NewTagForm onSubmit={handleAddNew} isFresh={isFresh} />
+          <div className="self-center">
+            <button className="btn-export w-40" onClick={handleExport}>
+              Export
+            </button>
+          </div>
         </div>
       </div>
       <div className="tags-filter"></div>
@@ -55,13 +82,15 @@ export default function Home() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {Object.values(tags).map((tag, index) => (
+              {tags.map((tag, index) => (
                 <SingleTag
                   key={tag.tagName}
                   {...tag}
                   index={index}
                   onDelete={handleDelete}
                   onRefresh={handleRefresh}
+                  onUpdate={handleUpdate}
+                  isFresh={isFresh}
                 />
               ))}
             </tbody>
